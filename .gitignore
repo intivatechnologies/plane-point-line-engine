@@ -1,0 +1,85 @@
+# Build artifacts
+bin/
+build/
+target/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.log
+
+# IDE-specific files
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+*.iml
+*.ipr
+*.iws
+
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# LWJGL specific (if generated or downloaded into project)
+# Exclude native libraries if they are downloaded into a specific folder and not managed by a build tool
+# For example, if you have a 'natives' folder containing platform-specific libraries:
+# natives/
+
+# Maven/Gradle specific
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+# Gradle
+.gradle/
+build/
+!gradle-wrapper.jar # Keep the wrapper jar if you use Gradle wrapper
+
+# Eclipse project files
+.classpath
+.project
+.settings/
+
+# Generated files
+bin/
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Local metadata and temporary files
+.metadata/
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Maven/Gradle generated files (if applicable)
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+release.properties
+dependency-reduced-pom.xml
+build/
+.gradle/
+*.iml
+
+# Log files
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node.js dependencies (if applicable)
+node_modules/
+
+# VS Code (if also used)
+.vscode/
