@@ -3,6 +3,7 @@ package basic_shape;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Triangle extends Shape {
+	
 	@Override
 	public void draw() {
 		super.draw();

@@ -2,7 +2,8 @@ package basic_shape;
 
 import static org.lwjgl.opengl.GL11.*;
 
-public class Circle extends Shape {
+public class Oval extends Shape {
+	
 	final int NUM_SEGMENTS = 100;
 	final float RADIUS = 0.5f;
 	

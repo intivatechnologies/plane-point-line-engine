@@ -1,12 +1,14 @@
 package main;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
-import basic_shader.ShaderProgram;
 import basic_shape.*;
+import glsl_shader.ShaderProgram;
 
 import java.nio.*;
 
@@ -20,7 +22,7 @@ import static org.lwjgl.opengl.GL20.*;
 public class MainWindow {
 	
 	private ShaderProgram shaderProgram = new ShaderProgram();
-	private Shape shape = new Circle();
+	private Shape shape = new Rectangle();
 
 	public void run() {
 		//Configure window instantiation
@@ -79,6 +81,26 @@ public class MainWindow {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 			
 			glUseProgram(shaderProgram.getProgramId());
+			
+			Matrix4f projection = new Matrix4f().ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
+
+			try (MemoryStack stack = MemoryStack.stackPush()) {
+			    FloatBuffer fb = stack.mallocFloat(16);
+			    projection.get(fb);
+			    int loc = glGetUniformLocation(shaderProgram.getProgramId(), "u_projection");
+			    glUniformMatrix4fv(loc, false, fb);
+			}
+			
+			Matrix4f model = new Matrix4f().identity();
+			model.translate(new Vector3f(100.0f, 50.0f, 0.0f));
+			model.scale(2.0f, 1.5f, 1.0f);
+			
+			try (MemoryStack stack = MemoryStack.stackPush()) {
+			    FloatBuffer fb = stack.mallocFloat(16);
+			    projection.get(fb);
+			    int loc = glGetUniformLocation(shaderProgram.getProgramId(), "u_model");
+			    glUniformMatrix4fv(loc, false, fb);
+			}
 			
 			shape.draw();
 

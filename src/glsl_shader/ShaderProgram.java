@@ -1,16 +1,19 @@
-package basic_shader;
+package glsl_shader;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;
 
+import java.util.Map;
+
 class Shader implements AutoCloseable {
+	//Map<ShaderConvention, ShaderSourceModel> ShaderConventionLinker.conventionalSources;
 	
 	private int shaderId;
 	public int getShaderId() { return shaderId; }
 	
 	public void run(ShaderConvention convention, int shaderEnum) {
-		final int sourceAssignment = shaderEnum == GL_VERTEX_SHADER? 0 : 1;
-		String source = ShaderConventionLinker.conventionalSources.get(convention)[sourceAssignment];
+		String source = ShaderConventionLinker.getInstance().getSource(convention)
+			.getSource(shaderEnum);
 		
 		shaderId = glCreateShader(shaderEnum);
         glShaderSource(shaderId, source);

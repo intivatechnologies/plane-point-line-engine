@@ -3,6 +3,7 @@ package basic_shape;
 import static org.lwjgl.opengl.GL15.*;
 
 public class Rectangle extends JointShape {
+	
 	@Override
 	public void draw() {
 		super.draw();

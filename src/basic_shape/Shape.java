@@ -10,6 +10,7 @@ import java.nio.FloatBuffer;
 import org.lwjgl.BufferUtils;
 
 public abstract class Shape {
+	
 	protected float[] vertices;
 	private int vao, vbo;
 	private int animationType = GL_STATIC_DRAW;
