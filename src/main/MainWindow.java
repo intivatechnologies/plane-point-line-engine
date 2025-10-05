@@ -1,7 +1,5 @@
 package main;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
 import org.lwjgl.*;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -9,6 +7,7 @@ import org.lwjgl.system.*;
 
 import basic_shape.*;
 import glsl_shader.ShaderProgram;
+import glsl_shader.ShaderFactory;
 
 import java.nio.*;
 
@@ -21,8 +20,8 @@ import static org.lwjgl.opengl.GL20.*;
 
 public class MainWindow {
 	
-	private ShaderProgram shaderProgram = new ShaderProgram();
 	private Shape shape = new Rectangle();
+	private ShaderProgram shaderProgram;
 
 	public void run() {
 		//Configure window instantiation
@@ -68,8 +67,9 @@ public class MainWindow {
 				
 		// Initialize OpenGL
 		GL.createCapabilities();
-		shaderProgram.run();
-		
+		ShaderFactory.beginFillShader();
+		ShaderFactory.addUniformVariable("mat4 u_projection");
+		shaderProgram = ShaderFactory.build();
 		shape.run();
 		
 		// Set the clear color
@@ -80,8 +80,9 @@ public class MainWindow {
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 			
-			glUseProgram(shaderProgram.getProgramId());
+			glUseProgram(shaderProgram.getId());
 			
+			/*
 			Matrix4f projection = new Matrix4f().ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
 
 			try (MemoryStack stack = MemoryStack.stackPush()) {
@@ -101,6 +102,7 @@ public class MainWindow {
 			    int loc = glGetUniformLocation(shaderProgram.getProgramId(), "u_model");
 			    glUniformMatrix4fv(loc, false, fb);
 			}
+			*/
 			
 			shape.draw();
 
@@ -108,7 +110,7 @@ public class MainWindow {
 			glfwPollEvents();
 		}
 		
-		glDeleteProgram(shaderProgram.getProgramId());
+		glDeleteProgram(shaderProgram.getId());
 		shape.unbind();
 
 		// Free the window callbacks and destroy the window
