@@ -91,8 +91,8 @@ public class ConventionalShaderLinker {
 			for(String line : loadedModel.getFragmentMemorySet())
 				System.out.println(line);
 				*/
-			System.out.println(loadedModel.getVertexMemorySet().getText());
-			System.out.println(loadedModel.getFragmentMemorySet().getText());
+			System.out.println(loadedModel.getShaderVertexModel().getText());
+			System.out.println(loadedModel.getShaderFragmentModel().getText());
 			
 			sources.put(convention, loadedModel);
 			return loadedModel;

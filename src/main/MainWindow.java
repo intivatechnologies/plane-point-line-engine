@@ -68,7 +68,7 @@ public class MainWindow {
 		// Initialize OpenGL
 		GL.createCapabilities();
 		ShaderFactory.beginFillShader();
-		ShaderFactory.addUniformVariable("mat4 u_projection");
+		ShaderFactory.addUniformVariableVertex("mat4 u_projection");
 		shaderProgram = ShaderFactory.build();
 		shape.run();
 		
