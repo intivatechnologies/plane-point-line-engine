@@ -1,10 +1,8 @@
 package glsl_shader;
 
-import java.lang.IllegalArgumentException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ArrayList;
-//import java.util.HashMap;
 import java.util.Map;
 
 public class ConventionalShaderLinker {
@@ -16,10 +14,10 @@ public class ConventionalShaderLinker {
 		return instance;
 	}
 	
-	private Map<ShaderConvention, ShaderSourceModel> sources = new HashMap<>(
+	private Map<ShaderConvention, ShaderDispenser> sources = new HashMap<>(
 		Map.of(
 			ShaderConvention.EMPTY,
-			new ShaderSourceModel(new ArrayList<String>(Arrays.asList(
+			new ShaderDispenser(new ArrayList<String>(Arrays.asList(
 				"#version 330 core\n",
 				
 			    "layout (location = 0) in vec3 aPos;\n",
@@ -42,20 +40,22 @@ public class ConventionalShaderLinker {
 		)
 	);
 	
+	/*
 	public void addSource(ShaderConvention convention) throws IllegalArgumentException {
 		if(sources.containsKey(convention))
 			throw new IllegalArgumentException("Failure adding new source because the key is already in use.");
 		else
 			sources.put(convention, null);
 	}
+	*/
 	
-	public ShaderSourceModel getShaderSourceModel(ShaderConvention convention){
+	public ShaderDispenser getShaderDispenser(ShaderConvention convention){
 		if(!sources.containsKey(convention)) {
-			ShaderSourceModel loadedModel;
+			ShaderDispenser loadedModel;
 			
 			switch(convention) {
 			case ShaderConvention.FILL:
-				loadedModel = new ShaderSourceModel(new ArrayList<String>(
+				loadedModel = new ShaderDispenser(new ArrayList<String>(
 					Arrays.asList(
 						"#version 330 core\n",
 						
@@ -91,8 +91,8 @@ public class ConventionalShaderLinker {
 			for(String line : loadedModel.getFragmentMemorySet())
 				System.out.println(line);
 				*/
-			System.out.println(loadedModel.getShaderVertexModel().getText());
-			System.out.println(loadedModel.getShaderFragmentModel().getText());
+			//System.out.println(loadedModel.getShaderVertexModel().getText());
+			//System.out.println(loadedModel.getShaderFragmentModel().getText());
 			
 			sources.put(convention, loadedModel);
 			return loadedModel;
