@@ -2,7 +2,6 @@ package glsl.syntax;
 
 import java.util.ArrayList;
 import glsl.shader.ShaderLayoutOperationException;
-import glsl.shader.ShaderNamingOperationException;
 import glsl.syntax.GLSLModifierParser.GLSLModifier;
 
 public class GLSLVariable {
@@ -11,24 +10,24 @@ public class GLSLVariable {
 	private ArrayList<GLSLModifier> modifiers = new ArrayList<>();
 	
 	public void setName(String name) { this.name = name; }
-	public void defineModifier(GLSLModifier gl_mod) { modifiers.add(gl_mod); }
 	
-	public String attemptPrint() throws ShaderLayoutOperationException, ShaderNamingOperationException {
+	/**
+	 * Stores gl_mod to the variable.
+	 * @param gl_mod
+	 */
+	public void define_a_modifier(String gl_mod) { modifiers.add(GLSLModifierParser.parse(gl_mod)); }
+	
+	public String print() {
 		StringBuilder sb = new StringBuilder("");
 		for(GLSLModifier gm : modifiers) {
-			String parsed;
 			try {
-				parsed = GLSLModifierParser.parse(gm);
-			} catch(ShaderLayoutOperationException e) {
-				throw new ShaderLayoutOperationException(e);
+				sb.append(GLSLModifierParser.parse(gm)).append(' ');
+			} catch (ShaderLayoutOperationException e) {
+				System.err.println("An error was thrown because an unintended modifier (layout) was disclosed in the wrong object.");
+				e.printStackTrace();
 			}
-			
-			sb.append(parsed).append(' ');
 		}
 		
-		if(name.length() == 0)
-			throw new ShaderNamingOperationException();
-		else
-			return sb.append(name).toString();
+		return sb.append(name).append(";\n").toString();
 	}
 }

@@ -4,13 +4,21 @@ class ShaderDispenser {
 	private ShaderSourceModel vertexShaderSourceModel, fragmentShaderSourceModel;
 	
 	public ShaderDispenser(String[] vertexSource, String[] fragmentSource) {
-		vertexShaderSourceModel = new ShaderSourceModel(vertexSource, "vertex");
-		fragmentShaderSourceModel = new ShaderSourceModel(fragmentSource, "fragment");
+		try {
+			vertexShaderSourceModel = new ShaderSourceModel(vertexSource);
+			fragmentShaderSourceModel = new ShaderSourceModel(fragmentSource);
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public ShaderDispenser(ShaderDispenser copy) {
-		vertexShaderSourceModel = new ShaderSourceModel(copy.getVertexShaderSourceModel().printList(), "vertex");
-		fragmentShaderSourceModel = new ShaderSourceModel(copy.getFragmentShaderSourceModel().printList(), "fragment");
+		try {
+			vertexShaderSourceModel = new ShaderSourceModel(copy.getVertexShaderSourceModel().printList());
+			fragmentShaderSourceModel = new ShaderSourceModel(copy.getFragmentShaderSourceModel().printList());
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public ShaderSourceModel getVertexShaderSourceModel() {
@@ -44,6 +52,7 @@ public class ShaderStation {
 	}
 	
 	private static void begin(ShaderLinker.CommunicationKey key) {
+		System.out.println("Shader key = " + ShaderLinker.parseCommunicationKey(key));
 		String[][] shaderSource = ShaderLinker.getInstance().getShaderSource(key);
 		sourceDispenser = new ShaderDispenser(shaderSource[0], shaderSource[1]);
 	}

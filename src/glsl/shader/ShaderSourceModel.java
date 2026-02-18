@@ -1,7 +1,9 @@
 package glsl.shader;
 
 import java.util.ArrayList;
-import glsl.syntax.*;
+
+import glsl.syntax.GLSLLayoutVariable;
+import glsl.syntax.GLSLVariable;
 
 /**
  * A set of distinct or multiple-choice keywords that get recorded in a line
@@ -49,11 +51,13 @@ class KeywordSet {
 
 public class ShaderSourceModel {
 	
-	private static final String VERSION_NOTE = "#version 330 core";
+	private String versionNote;
 	
+	/*
 	private static final KeywordSet LAYOUT_CUSTOM = new KeywordSet("layout"),
 		BEHAVIOUR_CUSTOM = new KeywordSet("attribute", "in", "out", "uniform"),
 		TYPE_CUSTOM = new KeywordSet("bool", "float", "int", "mat4", "vec2", "vec3", "vec4", "void");
+		*/
 	
 	private int layoutCounter = 0;
 	
@@ -65,10 +69,17 @@ public class ShaderSourceModel {
 	
 	private String[] getPrintSchema(){
 		ArrayList<String> print = new ArrayList<>();
-		print.add(VERSION_NOTE);
+		
+		interface DecodeEntry {
+			String compute(String line);
+		}
+		DecodeEntry decodeItSpecially = (line) -> line + "\n";
+		DecodeEntry decodeItNormally = (line) -> line + ";\n";
+		
+		print.add(decodeItSpecially.compute(versionNote));
 		
 		for(GLSLVariable cv : variableChains)
-			print.add(cv.print());
+			print.add(decodeItNormally.compute(cv.print()));
 		
 		for(String line : mainMethod)
 			print.add(line);
@@ -76,15 +87,29 @@ public class ShaderSourceModel {
 		return print.toArray(new String[print.size()]);
 	}
 	
-	public ShaderSourceModel(String[] source, String shaderType) {
+	public ShaderSourceModel(String[] source) throws Exception {
+		//capture the left side of the line break
+		if(source[0].contains("\n"))
+			versionNote = source[0].split("\n")[0];
+		else
+			versionNote = source[0];
+		
 		for(int i = 1; i < source.length; i++) {
-			String line = source[i];
-
-			if(line.contains("()")) {
+			//we\'ll get to this
+			if(source[i].contains("()")) {
 				mainMethodCounter = i;
+				i = source.length;
 				break;
 			}
 			
+			//capture the left side of the line break and semicolon
+			String line = source[i];
+			if(line.contains("\n"))
+				line = line.split("\n")[0];
+			if(line.contains(";"))
+				line = line.split(";")[0];
+			
+			//get all the text sequences (non-blank)
 			ArrayList<String> words = new ArrayList<>();
 			String wordSeparator = "";
 			for(int j = 0; j < line.length(); j++) {
@@ -97,26 +122,50 @@ public class ShaderSourceModel {
 				}
 			}
 			
-			/*
-			GLSLVariable cv = LAYOUT_CUSTOM.scanEquals(words.get(0)) ?
-					new GLSLLayoutVariable(layoutCounter) : new GLSLVariable();
-
-			String behaviourIndex = BEHAVIOUR_CUSTOM.scan(line);
-			if(behaviourIndex == null)
-				throw new IllegalArgumentException("An unsupported syntax occurrence was found in the scanning of"
-					+ " the " + shaderType + " shader.");
+			//TODO error is likely somewhere here
+			//remove any scripting that\'s unnecessary for parsing
+			int j = 0;
+			while(j < words.size()) {
+				if(j < words.size()) {
+					//remove layout location (but keep layout word)
+					if(words.get(j).equals("layout")) {
+						if(words.size() > j + 1) {
+							String layoutSequenceIteration = words.remove(j + 1);
+							j = !layoutSequenceIteration.contains(")") ?
+									0 : 1;
+							continue;
+						} else
+							throw new Exception("An illegal syntax entry was found on a layout declaration inside the GLSL.");
+					}
+					
+					//we\'ll get to this
+					if(words.get(j).contains("()")) {
+						mainMethodCounter = i;
+						i = source.length;
+						break;
+					}
+					
+					++j;
+				} else
+					break;
+			}
 			
-			String typeIndex = TYPE_CUSTOM.scan(line);
-			if(typeIndex == null)
-				throw new IllegalArgumentException("An unsupported syntax occurrence was found in the scanning of"
-						+ " the " + shaderType + " shader.");
+			//now that we have the words on this line, store the variable
+			GLSLVariable gv;
+			int startJ;
 			
-			cv.push(behaviourIndex);
-			cv.push(typeIndex);
-			cv.push(words.get(words.size() - 1));
+			if(words.get(0).equals("layout")) {
+				gv = new GLSLLayoutVariable(layoutCounter++);
+				startJ = 1;
+			} else {
+				gv = new GLSLVariable();
+				startJ = 0;
+			}
+			for(; startJ < words.size() - 1; startJ++)
+				gv.define_a_modifier(words.get(startJ));
 			
-			variableChains.add(cv);
-			*/
+			gv.setName(words.get(words.size() - 1));
+			variableChains.add(gv);
 		}
 		
 		while(!source[mainMethodCounter].contains("}"))

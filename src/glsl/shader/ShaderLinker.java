@@ -11,11 +11,6 @@ public class ShaderLinker {
 	}
 	
 	private static ShaderLinker instance;
-	public static ShaderLinker getInstance() {
-		if(instance == null)
-			instance = new ShaderLinker();
-		return instance;
-	}
 	
 	private Map<CommunicationKey, String[][]> sources = new HashMap<>(
 		Map.of(
@@ -54,6 +49,12 @@ public class ShaderLinker {
 			sources.put(convention, null);
 	}
 	*/
+	
+	public static ShaderLinker getInstance() {
+		if(instance == null)
+			instance = new ShaderLinker();
+		return instance;
+	}
 	
 	public String[][] getShaderSource(CommunicationKey convention){
 		if(!sources.containsKey(convention)) {
@@ -94,5 +95,20 @@ public class ShaderLinker {
 			return loadedModel;
 		} else
 			return sources.get(convention);
+	}
+	
+	public static String parseCommunicationKey(CommunicationKey commKey) {
+		String parse;
+		switch(commKey) {
+		case CommunicationKey.EMPTY:
+		default:
+			parse = "EMPTY";
+			break;
+		case CommunicationKey.FILL:
+			parse = "FILL";
+			break;
+		}
+		
+		return parse;
 	}
 }
