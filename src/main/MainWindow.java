@@ -6,8 +6,8 @@ import org.lwjgl.opengl.*;
 import org.lwjgl.system.*;
 
 import basic_shape.*;
-import glsl_shader.ShaderProgram;
-import glsl_shader.ShaderFactory;
+import glsl.shader.ShaderProgram;
+import glsl.shader.ShaderStation;
 
 import java.nio.*;
 
@@ -67,9 +67,9 @@ public class MainWindow {
 				
 		// Initialize OpenGL
 		GL.createCapabilities();
-		ShaderFactory.beginFillShader();
-		ShaderFactory.addUniformVariableVertex("mat4 u_projection");
-		shaderProgram = ShaderFactory.build();
+		ShaderStation.beginFillShader();
+		ShaderStation.addUniformVariableVertex("mat4 u_projection");
+		shaderProgram = ShaderStation.build();
 		shape.run();
 		
 		// Set the clear color

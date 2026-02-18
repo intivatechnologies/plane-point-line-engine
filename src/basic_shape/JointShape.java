@@ -6,7 +6,7 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
-public class JointShape extends Shape {
+abstract public class JointShape extends Shape {
 	protected int[] indices;
 	private int ebo;
 	

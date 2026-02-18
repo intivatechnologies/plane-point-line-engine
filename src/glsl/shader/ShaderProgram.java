@@ -1,4 +1,4 @@
-package glsl_shader;
+package glsl.shader;
 
 import static org.lwjgl.opengl.GL11.GL_FALSE;
 import static org.lwjgl.opengl.GL20.*;

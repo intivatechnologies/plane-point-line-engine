@@ -86,5 +86,5 @@ node_modules/
 # VS Code (if also used)
 .vscode/
 
-Canvas Document.odt
-code smell maintenance.ods
+"Canvas Document".odt
+"code smell maintenance".ods
